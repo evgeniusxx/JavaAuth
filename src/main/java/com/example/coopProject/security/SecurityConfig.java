@@ -60,8 +60,11 @@ public class SecurityConfig {
 
         config.setAllowedOrigins(List.of(
                 "http://192.168.0.191:8080",
+                "http://192.168.0.191:3000",
                 "http://localhost:8080",
-                "http://192.168.0.21:3000"
+                "http://localhost:3000",
+                "http://192.168.0.21:3000",
+                "http://95.142.38.51"
         ));
 
         config.setAllowedMethods(List.of(
