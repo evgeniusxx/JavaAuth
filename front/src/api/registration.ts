@@ -1,5 +1,5 @@
 // функция регистрации
-const BASE_URL_BD = "http://192.168.0.191:8080";
+const BASE_URL_BD = "http://95.142.38.51:8080";
 
 export interface User {
   email: string;
