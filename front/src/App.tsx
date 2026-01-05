@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { RegistrationScreen } from './screens/Registration/RegistrationScreen/RegistrationScreenComponent';
+import { deleteCookie, getCookie, setCookie } from './utils/cookies';
 
 
 const AUTH_TOKEN_STORAGE_KEY = 'token';
@@ -9,22 +10,26 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
+    const storedToken = getCookie(AUTH_TOKEN_STORAGE_KEY);
     setIsAuth(Boolean(storedToken));
     setIsLoading(false);
   }, []);
 
   const handleLogin = () => {
     const demoToken = crypto.randomUUID();
-    localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, demoToken);
+    setCookie(AUTH_TOKEN_STORAGE_KEY, demoToken);
     setIsAuth(true);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+    deleteCookie(AUTH_TOKEN_STORAGE_KEY);
     setIsAuth(false);
   };
 
+  const handleRegister = (token:string)=>{
+    setCookie(AUTH_TOKEN_STORAGE_KEY, token);
+    setIsAuth(true)
+  }
   if (isLoading) {
     return (
       <div>
@@ -41,5 +46,5 @@ export default function App() {
   //   );
   // }
 
-  return <RegistrationScreen onLogout={handleLogout} />;
+  return <RegistrationScreen onLogout={handleLogout} onRegister={handleRegister} />;
 }

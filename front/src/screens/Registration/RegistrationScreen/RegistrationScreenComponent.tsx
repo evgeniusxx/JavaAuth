@@ -3,13 +3,14 @@ import { RegistrationData } from "../types";
 import { EmailInput } from "./EmailInput";
 import { PasswordInput } from "./PasswordInput";
 import { UsernameInput } from "./UsernameInput";
-import { AcceptButton } from "./AcceptButton";
+import { RegisterButton } from "./RegisterButton";
 
 interface RegistrationScreenProps {
   onLogout: () => void;
+  onRegister: (token: string) => void;
 }
 
-export const RegistrationScreen = ({ onLogout }: RegistrationScreenProps) => {
+export const RegistrationScreen = ({ onLogout, onRegister }: RegistrationScreenProps) => {
   const [registrationData, setRegistrationData] = useState<RegistrationData>({
     email: "",
     username: "",
@@ -28,6 +29,7 @@ export const RegistrationScreen = ({ onLogout }: RegistrationScreenProps) => {
     setRegistrationData((prev) => ({ ...prev, password: newPassword }));
   };
 
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-6 bg-white">
       <EmailInput email={registrationData.email} onChange={handleEmailChange} />
@@ -39,10 +41,11 @@ export const RegistrationScreen = ({ onLogout }: RegistrationScreenProps) => {
         password={registrationData.password}
         onChange={handlePasswordChange}
       />
-      <AcceptButton
+      <RegisterButton
         email={registrationData.email}
         username={registrationData.username}
         password={registrationData.password}
+        onRegister={onRegister}
       />
     </div>
   );
