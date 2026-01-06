@@ -38,6 +38,11 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    }
+
     public User update(Long id, User updatedUser) {
         User existing = findById(id);
         existing.setUsername(updatedUser.getUsername());
