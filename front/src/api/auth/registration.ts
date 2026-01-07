@@ -12,7 +12,7 @@ class RegistrationService {
       body: JSON.stringify(userData),
     });
     if (!response.ok) {
-      throw new Error("OSHIBKA EPTA");
+      throw new Error(await response.text());
     }
     return await response.json();
   }

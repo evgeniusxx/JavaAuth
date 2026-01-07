@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from '@mui/material';
 import { registration } from '../../../api/auth/registration';
 import { RegisterRequest } from '../../../api/types';
+import { useSnackbar } from '../../../contexts/SnackbarContext';
 
 interface RegisterButtonProps {
     email: string;
@@ -16,6 +17,7 @@ interface RegisterButtonProps {
     password,
     onRegister,
   }: RegisterButtonProps) => {
+    const { showSuccess, showError } = useSnackbar();
 
     const handleRegister = () => {
         const registerData: RegisterRequest = {
@@ -27,11 +29,13 @@ interface RegisterButtonProps {
         registration.registrationUser(registerData)
         .then((response) => {
             if (response.token) {
+                showSuccess('Регистрация прошла успешно!');
                 onRegister(response.token);
             }
         })
         .catch((error) => {
-            console.log(error);
+            console.error(error);
+            showError(error.message || 'Ошибка при регистрации');
         });
     }
   

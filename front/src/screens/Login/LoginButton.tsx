@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from '@mui/material';
 import { login } from '../../api/auth/login';
 import { LoginRequest } from '../../api/types';
+import { useSnackbar } from '../../contexts/SnackbarContext';
 
 interface LoginButtonProps {
     username: string;
@@ -14,6 +15,7 @@ interface LoginButtonProps {
     password,
     onLogin,
   }: LoginButtonProps) => {
+    const { showSuccess, showError } = useSnackbar();
 
     const handleLogin = () => {
         const loginData: LoginRequest = {
@@ -24,11 +26,13 @@ interface LoginButtonProps {
         login.loginUser(loginData)
         .then((response) => {
             if (response.token) {
+                showSuccess('Вход выполнен успешно!');
                 onLogin(response.token);
             }
         })
         .catch((error) => {
-            console.log(error);
+            console.error(error);
+            showError(error.message || 'Ошибка при входе');
         });
     }
   
