@@ -2,8 +2,10 @@ package com.example.coopProject.controller;
 
 import com.example.coopProject.dto.LoginRequest;
 import com.example.coopProject.dto.LoginResponse;
+import com.example.coopProject.dto.RegisterRequest;
 import com.example.coopProject.dto.UserProfileDTO;
 import com.example.coopProject.entity.User;
+import com.example.coopProject.security.CustomUserDetails;
 import com.example.coopProject.security.JwtUtil;
 import com.example.coopProject.service.UserService;
 import jakarta.validation.Valid;
@@ -11,22 +13,38 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
     private final AuthenticationManager authManager;
     private final JwtUtil jwtUtil;
     private final UserService userService;
+
+    @PostMapping("/register")
+    public Map<String, String> register(@Valid @RequestBody RegisterRequest request) {
+        User user = User.builder()
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .password(request.getPassword())
+                .build();
+
+        User saved = userService.create(user);
+
+        String token = jwtUtil.generateToken(saved.getUsername());
+        userService.saveToken(saved.getUsername(), token);
+
+        return Map.of("token", token);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
@@ -46,7 +64,6 @@ public class AuthController {
         }
 
         User user = userService.findByUsername(request.getUsername());
-
         String token = jwtUtil.generateToken(user.getUsername());
 
         return ResponseEntity.ok(
@@ -58,6 +75,17 @@ public class AuthController {
                                 user.getEmail()
                         )
                 )
+        );
+    }
+
+    @GetMapping("/me")
+    public UserProfileDTO me(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        User user = userDetails.getUser();
+
+        return new UserProfileDTO(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail()
         );
     }
 }
