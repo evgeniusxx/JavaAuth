@@ -10,7 +10,10 @@ interface RegistrationScreenProps {
   onRegister: (token: string) => void;
 }
 
-export const RegistrationScreen = ({ onLogout, onRegister }: RegistrationScreenProps) => {
+export const RegistrationScreen = ({
+  onLogout,
+  onRegister,
+}: RegistrationScreenProps) => {
   const [registrationData, setRegistrationData] = useState<RegistrationData>({
     email: "",
     username: "",
@@ -29,24 +32,30 @@ export const RegistrationScreen = ({ onLogout, onRegister }: RegistrationScreenP
     setRegistrationData((prev) => ({ ...prev, password: newPassword }));
   };
 
-
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-6 bg-white">
-      <EmailInput email={registrationData.email} onChange={handleEmailChange} />
-      <UsernameInput
-        username={registrationData.username}
-        onChange={handleUsernameChange}
-      />
-      <PasswordInput
-        password={registrationData.password}
-        onChange={handlePasswordChange}
-      />
-      <RegisterButton
-        email={registrationData.email}
-        username={registrationData.username}
-        password={registrationData.password}
-        onRegister={onRegister}
-      />
+    <div className="flex flex-col items-center text-slate-100 p-6">
+      <div className="text-2x1 font-bold mt-8 mb-6">{"REGISTRATION"}</div>
+      
+      <div className="flex flex-col gap-4 w-full max-w-md">
+        <EmailInput
+          email={registrationData.email}
+          onChange={handleEmailChange}
+        />
+        <UsernameInput
+          username={registrationData.username}
+          onChange={handleUsernameChange}
+        />
+        <PasswordInput
+          password={registrationData.password}
+          onChange={handlePasswordChange}
+        />
+        <RegisterButton
+          email={registrationData.email}
+          username={registrationData.username}
+          password={registrationData.password}
+          onRegister={onRegister}
+        />
+      </div>
     </div>
   );
 };

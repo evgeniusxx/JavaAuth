@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { RegistrationScreen } from './screens/Registration/RegistrationScreen/RegistrationScreenComponent';
-import { deleteCookie, getCookie, setCookie } from './utils/cookies';
+import React, { useEffect, useState } from "react";
+import { RegistrationScreen } from "./screens/Registration/RegistrationScreen/RegistrationScreenComponent";
+import { deleteCookie, getCookie, setCookie } from "./utils/cookies";
+import { LoginComponent } from "./screens/Login/LoginComponent";
+import { SnackbarProvider } from "./contexts/SnackbarContext";
 
-
-const AUTH_TOKEN_STORAGE_KEY = 'token';
+const AUTH_TOKEN_STORAGE_KEY = "token";
 
 export default function App() {
   const [isAuth, setIsAuth] = useState(false);
@@ -26,10 +27,10 @@ export default function App() {
     setIsAuth(false);
   };
 
-  const handleRegister = (token:string)=>{
+  const handleRegister = (token: string) => {
     setCookie(AUTH_TOKEN_STORAGE_KEY, token);
-    setIsAuth(true)
-  }
+    setIsAuth(true);
+  };
   if (isLoading) {
     return (
       <div>
@@ -46,5 +47,12 @@ export default function App() {
   //   );
   // }
 
-  return <RegistrationScreen onLogout={handleLogout} onRegister={handleRegister} />;
+  return (
+    <SnackbarProvider>
+      <div className="min-h-screen bg-slate-950">
+        <RegistrationScreen onLogout={handleLogout} onRegister={handleRegister} />
+        <LoginComponent onLogout={handleLogout} onLogin={handleLogin} />
+      </div>
+    </SnackbarProvider>
+  );
 }
