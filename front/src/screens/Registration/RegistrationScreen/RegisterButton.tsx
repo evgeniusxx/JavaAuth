@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from '@mui/material';
-import { registration, User } from '../../../api/registration';
+import { registration } from '../../../api/auth/registration';
+import { RegisterRequest } from '../../../api/types';
 
 interface RegisterButtonProps {
-
     email: string;
     username: string;
     password: string;
@@ -15,22 +15,22 @@ interface RegisterButtonProps {
     username,
     password,
     onRegister,
-
   }: RegisterButtonProps) => {
 
     const handleRegister = () => {
-        // console.log("email: " + email, "username: " + username, "password: " + password);
-        registration.registrationUser(
-            {
-                email: email,
-                username: username,
-                password: password,
-            } as User
-        ).then((response) => {
-        if (response.token) {
-            onRegister(response.token);
-        }
-        }).catch((error) => {
+        const registerData: RegisterRequest = {
+            email,
+            username,
+            password,
+        };
+        
+        registration.registrationUser(registerData)
+        .then((response) => {
+            if (response.token) {
+                onRegister(response.token);
+            }
+        })
+        .catch((error) => {
             console.log(error);
         });
     }
