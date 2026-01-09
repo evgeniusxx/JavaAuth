@@ -25,7 +25,7 @@ public class UserService {
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setEnabled(true);
+        user.setActive(true);
         return userRepository.save(user);
     }
 
@@ -43,23 +43,11 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 
-    public User update(Long id, User updatedUser) {
-        User existing = findById(id);
-        existing.setUsername(updatedUser.getUsername());
-        existing.setEmail(updatedUser.getEmail());
-        return userRepository.save(existing);
-    }
-
-    public void saveToken(String username, String token) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        user.setToken(token);
-        userRepository.save(user);
-    }
-
-    public User findByToken(String token) {
-        return userRepository.findByToken(token)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid token"));
-    }
+//    public User update(Long id, User updatedUser) {
+//        User existing = findById(id);
+//        existing.setUsername(updatedUser.getUsername());
+//        existing.setEmail(updatedUser.getEmail());
+//        return userRepository.save(existing);
+//    }
 }
 

@@ -4,9 +4,11 @@ import com.example.coopProject.dto.LoginRequest;
 import com.example.coopProject.dto.LoginResponse;
 import com.example.coopProject.dto.RegisterRequest;
 import com.example.coopProject.dto.UserProfileDTO;
+import com.example.coopProject.entity.RefreshToken;
 import com.example.coopProject.entity.User;
 import com.example.coopProject.security.CustomUserDetails;
 import com.example.coopProject.security.JwtUtil;
+import com.example.coopProject.service.RefreshTokenService;
 import com.example.coopProject.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ public class AuthController {
     private final AuthenticationManager authManager;
     private final JwtUtil jwtUtil;
     private final UserService userService;
+    private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/register")
     public Map<String, String> register(@Valid @RequestBody RegisterRequest request) {
@@ -41,7 +44,6 @@ public class AuthController {
         User saved = userService.create(user);
 
         String token = jwtUtil.generateToken(saved.getUsername());
-        userService.saveToken(saved.getUsername(), token);
 
         return Map.of("token", token);
     }
@@ -64,11 +66,13 @@ public class AuthController {
         }
 
         User user = userService.findByUsername(request.getUsername());
-        String token = jwtUtil.generateToken(user.getUsername());
+        String accessToken = jwtUtil.generateToken(user.getUsername());
+        String refreshToken = refreshTokenService.create(user);
 
         return ResponseEntity.ok(
                 new LoginResponse(
-                        token,
+                        accessToken,
+                        refreshToken,
                         new UserProfileDTO(
                                 user.getId(),
                                 user.getUsername(),
@@ -78,14 +82,33 @@ public class AuthController {
         );
     }
 
-    @GetMapping("/me")
-    public UserProfileDTO me(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        User user = userDetails.getUser();
+    @PostMapping("/refresh")
+    public Map<String, String> refresh(@RequestBody Map<String, String> body) {
+        String refreshToken = body.get("refreshToken");
 
-        return new UserProfileDTO(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail()
-        );
+        RefreshToken stored = refreshTokenService.verify(refreshToken);
+
+        String newAccessToken =
+                jwtUtil.generateToken(stored.getUser().getUsername());
+
+        return Map.of("accessToken", newAccessToken);
     }
+
+    @PostMapping("/logout")
+    public void logout(@RequestBody Map<String, String> body) {
+        String refreshToken = body.get("refreshToken");
+        RefreshToken token = refreshTokenService.verify(refreshToken);
+        refreshTokenService.revoke(token);
+    }
+//    @GetMapping("/me")
+//    public UserProfileDTO me(@AuthenticationPrincipal CustomUserDetails userDetails) {
+//        User user = userDetails.getUser();
+//
+//        return new UserProfileDTO(
+//                user.getId(),
+//                user.getUsername(),
+//                user.getEmail()
+//        );
+//    }
+
 }

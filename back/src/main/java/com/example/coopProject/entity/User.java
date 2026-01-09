@@ -26,8 +26,5 @@ public class User {
     private String password;
 
     @Column(nullable = false)
-    private boolean enabled = true;
-
-    @Column(length = 500)
-    private String token;
+    private boolean active = true;
 }

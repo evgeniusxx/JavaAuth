@@ -48,9 +48,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             try {
                 // Проверяем, что токен валиден по структуре JWT
                 if (jwtUtil.isTokenValid(token, username)) {
-                    // Проверяем, что токен существует в БД и принадлежит пользователю
-                    User user = userService.findByToken(token);
-                    if (user != null && user.getUsername().equals(username)) {
                         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                         UsernamePasswordAuthenticationToken authToken =
                                 new UsernamePasswordAuthenticationToken(
@@ -60,7 +57,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                 );
                         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authToken);
-                    }
                 }
             } catch (Exception e) {
                 // Токен невалиден или не найден в БД - аутентификация не выполняется

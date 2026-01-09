@@ -28,5 +28,4 @@ public class CoopProjectApplication {
 
 		SpringApplication.run(CoopProjectApplication.class, args);
 	}
-	
 }
