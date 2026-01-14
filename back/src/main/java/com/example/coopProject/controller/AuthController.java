@@ -24,7 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -33,6 +33,7 @@ public class AuthController {
     private final UserService userService;
     private final RefreshTokenService refreshTokenService;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/register")
     public Map<String, String> register(@Valid @RequestBody RegisterRequest request) {
         User user = User.builder()
