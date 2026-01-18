@@ -16,11 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 
@@ -33,8 +30,7 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final UserService userService;
     private final RefreshTokenService refreshTokenService;
-
-    @ResponseStatus(HttpStatus.CREATED)
+    
     @PostMapping("/register")
     public Map<String, String> register(@Valid @RequestBody RegisterRequest request) {
         User user = User.builder()
@@ -53,19 +49,12 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
 
-        try {
-            authManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getUsername(),
-                            request.getPassword()
-                    )
-            );
-        } catch (AuthenticationException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.UNAUTHORIZED,
-                    "Authentication failed"
-            );
-        }
+        authManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getUsername(),
+                        request.getPassword()
+                )
+        );
 
         User user = userService.findByUsername(request.getUsername());
         String accessToken = jwtUtil.generateToken(user.getUsername());
@@ -81,6 +70,17 @@ public class AuthController {
                                 user.getEmail()
                         )
                 )
+        );
+    }
+
+    @GetMapping("/me")
+    public UserProfileDTO me(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        User user = userDetails.getUser();
+
+        return new UserProfileDTO(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail()
         );
     }
 
@@ -101,16 +101,5 @@ public class AuthController {
         String refreshToken = body.get("refreshToken");
         RefreshToken token = refreshTokenService.verify(refreshToken);
         refreshTokenService.revoke(token);
-    }
-
-    @GetMapping("/me")
-    public UserProfileDTO me(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        User user = userDetails.getUser();
-
-        return new UserProfileDTO(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail()
-        );
     }
 }

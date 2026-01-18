@@ -1,6 +1,7 @@
 package com.example.coopProject.security;
 
 import com.example.coopProject.entity.User;
+import com.example.coopProject.exception.InvalidTokenException;
 import com.example.coopProject.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -40,28 +41,35 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             try {
                 username = jwtUtil.extractUsername(token);
             } catch (Exception e) {
-                // игнорируем, SecurityContext останется пустым
+                throw new InvalidTokenException("Неверный или истёкший токен");
             }
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            try {
-                // Проверяем, что токен валиден по структуре JWT
-                if (jwtUtil.isTokenValid(token, username)) {
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(
-                                    userDetails,
-                                    null,
-                                    userDetails.getAuthorities()
-                            );
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
-            } catch (Exception e) {
-                // Токен невалиден или не найден в БД - аутентификация не выполняется
-                // SecurityContext останется пустым
+        if (username == null || SecurityContextHolder.getContext().getAuthentication() != null) {
+            return;
+        }
+
+        try {
+            if (!jwtUtil.isTokenValid(token, username)) {
+                return;
             }
+
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+            if (!jwtUtil.isTokenValid(token, userDetails.getUsername())) {
+                throw new InvalidTokenException("Неверный или истёкший токен");
+            }
+
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    userDetails,
+                    null,
+                    userDetails.getAuthorities()
+            );
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+
+        } catch (Exception e) {
+            //
         }
 
         filterChain.doFilter(request, response);

@@ -1,14 +1,13 @@
 package com.example.coopProject.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginResponse {
     private String accessToken;
     private String refreshToken;
-    private UserProfileDTO profile;
+    private UserProfileDTO user;
 }
