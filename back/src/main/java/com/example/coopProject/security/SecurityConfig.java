@@ -58,14 +58,14 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of(
-                "http://192.168.0.191:8080",
-                "http://192.168.0.191:3000",
-                "http://localhost:8080",
-                "http://localhost:3000",
-                "http://192.168.0.21:3000",
-                "http://95.142.38.51"
-        ));
+    config.setAllowedOrigins(List.of(
+            "http://ew-app.ru",
+            "https://ew-app.ru",
+            "http://www.ew-app.ru",
+            "https://www.ew-app.ru",
+            "http://localhost:3000",  // для локальной разработки
+            "http://localhost:8080"   // для локальной разработки
+    ));
 
         config.setAllowedMethods(List.of(
                 "GET", "POST", "PUT", "DELETE", "OPTIONS"
