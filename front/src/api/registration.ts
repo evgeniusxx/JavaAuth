@@ -1,5 +1,4 @@
-// функция регистрации
-const BASE_URL_BD = "http://95.142.38.51:8080";
+const BASE_URL_BD = "https://ew-app.ru";
 
 export interface User {
   email: string;
