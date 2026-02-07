@@ -11,6 +11,7 @@ const AUTH_TOKEN_STORAGE_KEY = "token";
 export default function App() {
   const [isAuth, setIsAuth] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRegistration, setIsRegistration] = useState(false);
 
   useEffect(() => {
     const storedToken = getCookie(AUTH_TOKEN_STORAGE_KEY);
@@ -43,20 +44,26 @@ export default function App() {
     );
   }
 
-  // if (!isAuth) {
-  //   return (
-
-  //   );
-  // }
-
   return (
     <SnackbarProvider>
       <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
         <div className="flex justify-end p-4">
           <ThemeSwitcher />
         </div>
-        <RegistrationScreen onLogout={handleLogout} onRegister={handleRegister} />
-        <LoginComponent onLogout={handleLogout} onLogin={handleLogin} />
+        <div className="h-[500px] flex flex-col justify-between">
+          
+          {isRegistration ? (
+            <RegistrationScreen onLogout={handleLogout} onRegister={handleRegister} />
+          ) : <LoginComponent onLogout={handleLogout} onLogin={handleLogin} />}
+          <div className="mt-8 mb-6 flex justify-center items-bottom">
+            <button
+              onClick={() => setIsRegistration(!isRegistration)}
+              className="text-sm font-bold text-blue-600 dark:text-blue-400 hover:text-blue-400 dark:hover:text-blue-600"
+            >
+              {isRegistration ? "Войти" : "Нет аккаунта? Зарегистрироваться"}
+            </button>
+          </div>
+        </div>
       </div>
     </SnackbarProvider>
   );
