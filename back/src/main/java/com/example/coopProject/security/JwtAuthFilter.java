@@ -36,28 +36,37 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String token = null;
         String username = null;
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-            try {
-                username = jwtUtil.extractUsername(token);
-            } catch (Exception e) {
-                throw new InvalidTokenException("Неверный или истёкший токен");
-            }
+        // ВАЖНО: если токена нет — всегда пропускаем запрос дальше.
+        // Иначе permitAll эндпоинты (login/register/refresh) будут возвращать пустой 200.
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        token = authHeader.substring(7);
+        try {
+            username = jwtUtil.extractUsername(token);
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
 
         if (username == null || SecurityContextHolder.getContext().getAuthentication() != null) {
+            filterChain.doFilter(request, response);
             return;
         }
 
         try {
             if (!jwtUtil.isTokenValid(token, username)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
             if (!jwtUtil.isTokenValid(token, userDetails.getUsername())) {
-                throw new InvalidTokenException("Неверный или истёкший токен");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             }
 
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -69,7 +78,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authToken);
 
         } catch (Exception e) {
-            //
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
 
         filterChain.doFilter(request, response);

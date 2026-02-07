@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@mui/material';
+import { Button } from '../../../components/ui/Button';
 import { registration } from '../../../api/auth/registration';
 import { RegisterRequest } from '../../../api/types';
 import { useSnackbar } from '../../../contexts/SnackbarContext';
@@ -41,6 +41,6 @@ interface RegisterButtonProps {
   
   
     return (
-    <Button variant="outlined" type="button" onClick={handleRegister}>Register</Button>
+    <Button variant="outline" type="button" onClick={handleRegister}>Register</Button>
     );
   };

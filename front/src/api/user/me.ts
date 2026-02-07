@@ -4,7 +4,7 @@ class UserService {
   baseUrl = process.env.REACT_APP_BASE_URL;
 
   async me(token: string): Promise<UserProfile> {
-    const response = await fetch(`${this.baseUrl}/api/user/me`, {
+    const response = await fetch(`${this.baseUrl}/api/v1/user/me`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

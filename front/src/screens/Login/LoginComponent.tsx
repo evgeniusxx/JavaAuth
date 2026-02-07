@@ -32,7 +32,7 @@ export const LoginComponent = ({
   };
 
   return (
-    <div className="flex flex-col items-center text-slate-100 p-6">
+    <div className="flex flex-col items-center text-slate-900 dark:text-slate-100 p-6">
       <div className="text-2x1 font-bold mt-8 mb-6">{"LOGIN"}</div>
       
       <div className="flex flex-col gap-4 w-full max-w-md">

@@ -1,37 +1,37 @@
-import React, { useState } from 'react';
-import { Button } from '@mui/material';
-import { registration, User } from '../../../api/registration';
+import React from "react";
+import { Button } from '../../../components/ui/Button';
+import { registration } from '../../../api/auth/registration';
+import { RegisterRequest } from "../../../api/types";
 
 interface AcceptButtonProps {
 
     email: string;
     username: string;
     password: string;
-  }
-  
-  export const AcceptButton = ({ 
+}
+
+export const AcceptButton = ({
     email,
     username,
     password,
-  }: AcceptButtonProps) => {
+}: AcceptButtonProps) => {
 
     const handleAccept = () => {
-        // console.log("email: " + email, "username: " + username, "password: " + password);
-        registration.registrationUser(
-            {
-                email: email,
-                username: username,
-                password: password,
-            } as User
-        ).then((response) => {
+        const registerData: RegisterRequest = {
+            email,
+            username,
+            password,
+        };
+
+        registration.registrationUser(registerData).then((response) => {
             console.log(response);
         }).catch((error) => {
             console.log(error);
         });
     }
-  
-  
+
+
     return (
-    <Button variant="outlined" type="button" onClick={handleAccept}>Accept</Button>
+        <Button variant="outline" type="button" onClick={handleAccept}>Accept</Button>
     );
-  };
+};

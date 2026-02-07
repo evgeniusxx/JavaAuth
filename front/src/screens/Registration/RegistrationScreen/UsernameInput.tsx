@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { TextField } from "@mui/material";
+import React from "react";
+import { TextInput } from "../../../components/ui/TextInput";
 
 interface UsernameInputProps {
   username: string;
@@ -8,12 +8,11 @@ interface UsernameInputProps {
 
 export const UsernameInput = ({ username, onChange }: UsernameInputProps) => {
   return (
-    <TextField
-      id="outlined-basic"
+    <TextInput
       label="Username"
-      variant="outlined"
       value={username}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={onChange}
+      autoComplete="username"
     />
   );
 };

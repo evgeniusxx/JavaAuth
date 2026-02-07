@@ -1,5 +1,5 @@
 Экран авторизации
 
-С использованием React и MUI
+С использованием React и Tailwind CSS
 
 ### `npm start`

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@mui/material';
+import { Button } from '../../components/ui/Button';
 import { login } from '../../api/auth/login';
 import { LoginRequest } from '../../api/types';
 import { useSnackbar } from '../../contexts/SnackbarContext';
@@ -38,6 +38,6 @@ interface LoginButtonProps {
   
   
     return (
-    <Button variant="outlined" type="button" onClick={handleLogin}>Login</Button>
+    <Button variant="outline" type="button" onClick={handleLogin}>Login</Button>
     );
   };

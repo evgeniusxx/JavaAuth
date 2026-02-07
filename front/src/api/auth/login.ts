@@ -4,7 +4,7 @@ class LoginService {
   baseUrl = process.env.REACT_APP_BASE_URL;
 
   async loginUser(userData: LoginRequest): Promise<AuthResponse> {
-    const response = await fetch(`${this.baseUrl}/api/auth/login`, {
+    const response = await fetch(`${this.baseUrl}/api/v1/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { TextField } from "@mui/material";
+import React from "react";
+import { TextInput } from "../../components/ui/TextInput";
 
 interface EmailInputProps {
   email: string;
@@ -8,12 +8,12 @@ interface EmailInputProps {
 
 export const EmailInput = ({ email, onChange }: EmailInputProps) => {
   return (
-    <TextField
-      id="outlined-basic"
+    <TextInput
       label="Email"
-      variant="outlined"
+      type="email"
       value={email}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={onChange}
+      autoComplete="email"
     />
   );
 };

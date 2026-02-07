@@ -27,6 +27,6 @@ ssh root@95.142.38.51 "nginx -t && systemctl reload nginx"
 echo.
 echo ========================================
 echo   Frontend deployed successfully!
-echo   URL: http://95.142.38.51
+echo   URL: http://ew-app.ru
 echo ========================================
 pause

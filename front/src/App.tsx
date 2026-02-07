@@ -3,6 +3,8 @@ import { RegistrationScreen } from "./screens/Registration/RegistrationScreen/Re
 import { deleteCookie, getCookie, setCookie } from "./utils/cookies";
 import { LoginComponent } from "./screens/Login/LoginComponent";
 import { SnackbarProvider } from "./contexts/SnackbarContext";
+import { ThemeSwitcher } from "./components/ThemeSwitcher";
+
 
 const AUTH_TOKEN_STORAGE_KEY = "token";
 
@@ -49,7 +51,10 @@ export default function App() {
 
   return (
     <SnackbarProvider>
-      <div className="min-h-screen bg-slate-950">
+      <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+        <div className="flex justify-end p-4">
+          <ThemeSwitcher />
+        </div>
         <RegistrationScreen onLogout={handleLogout} onRegister={handleRegister} />
         <LoginComponent onLogout={handleLogout} onLogin={handleLogin} />
       </div>

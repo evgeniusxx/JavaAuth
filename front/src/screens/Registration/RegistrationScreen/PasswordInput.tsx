@@ -1,20 +1,19 @@
-import React, { useState } from "react";
-import { TextField } from "@mui/material";
+import React from "react";
+import { TextInput } from "../../../components/ui/TextInput";
 
 interface PasswordInputProps {
   password: string;
-  onChange: (value: string) => void
+  onChange: (value: string) => void;
 }
 
 export const PasswordInput = ({ password, onChange }: PasswordInputProps) => {
   return (
-    <TextField
-      id="outlined-basic"
+    <TextInput
       label="Password"
-      variant="outlined"
       type="password"
       value={password}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={onChange}
+      autoComplete="current-password"
     />
   );
 };
