@@ -1,20 +1,15 @@
 import { RegisterRequest, AuthResponse } from "../types";
+import { requestJson } from "../requestJson";
 
 class RegistrationService {
   baseUrl = process.env.REACT_APP_BASE_URL;
 
   async registrationUser(userData: RegisterRequest): Promise<AuthResponse> {
-    const response = await fetch(`${this.baseUrl}/api/v1/auth/register`, {
+    return requestJson<AuthResponse>(`${this.baseUrl}/api/v1/auth/register`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userData),
     });
-    if (!response.ok) {
-      throw new Error(await response.text());
-    }
-    return await response.json();
   }
 }
 

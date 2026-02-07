@@ -1,22 +1,20 @@
 import { UserProfile } from "../types";
+import { requestJson } from "../requestJson";
+import { getCookie } from "../../utils/cookies";
 
 class UserService {
   baseUrl = process.env.REACT_APP_BASE_URL;
 
-  async me(token: string): Promise<UserProfile> {
-    const response = await fetch(`${this.baseUrl}/api/v1/user/me`, {
+  async me(): Promise<UserProfile> {
+    const token = getCookie("token");
+
+    return requestJson<UserProfile>(`${this.baseUrl}/api/v1/user/me`, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
     });
-    if (!response.ok) {
-      throw new Error("OSHIBKA EPTA");
-    }
-    return await response.json();
   }
 }
 
 export const userService = new UserService();
-    

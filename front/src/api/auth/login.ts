@@ -1,20 +1,15 @@
 import { LoginRequest, AuthResponse } from "../types";
+import { requestJson } from "../requestJson";
 
 class LoginService {
   baseUrl = process.env.REACT_APP_BASE_URL;
 
   async loginUser(userData: LoginRequest): Promise<AuthResponse> {
-    const response = await fetch(`${this.baseUrl}/api/v1/auth/login`, {
+    return requestJson<AuthResponse>(`${this.baseUrl}/api/v1/auth/login`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userData),
     });
-    if (!response.ok) {
-      throw new Error(await response.text());
-    }
-    return await response.json();
   }
 }
 
